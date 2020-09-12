@@ -27,14 +27,14 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 		// TODO Auto-generated method stub
 
 		try {
-			File file = new File("target/test-outputs/XMLoutput.txt");
+			File file = new File("XMLoutput.txt");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			fos = new FileOutputStream(file);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 		} catch (Exception e) {
-			throw new ItemStreamException(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 

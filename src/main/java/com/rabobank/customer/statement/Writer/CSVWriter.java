@@ -25,14 +25,14 @@ public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 	public void open(ExecutionContext executionContext) throws ItemStreamException {
 
 		try {
-			File file = new File("target/test-outputs/output.txt");
+			File file = new File("output.txt");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 			fos = new FileOutputStream(file);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 		} catch (Exception e) {
-			throw new ItemStreamException(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 

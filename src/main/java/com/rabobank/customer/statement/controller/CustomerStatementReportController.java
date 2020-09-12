@@ -22,7 +22,8 @@ public class CustomerStatementReportController {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 		jobLauncher.run(statementReportJob, jobParameters);
-		return "Batch job has been invoked and check the generated reports at target/test-outputs path";
+		return "Batch job has been invoked and check the generated reports at project path";
 	}
+	
 
 }
