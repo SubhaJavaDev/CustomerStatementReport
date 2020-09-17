@@ -91,10 +91,10 @@ public class CustomerStatementReportController {
 			}
 			String batchStatus = je.getStatus().toString();
 			if (batchStatus == BatchStatus.FAILED.toString())
-				return "Error while processing XML file";
+				return "<h1>Error while processing XML file</h1>";
 
 			else if (batchStatus == BatchStatus.COMPLETED.toString())
-				return "Batch job has been invoked for xml records and report generated at project path";
+				return "<h1> Batch job has been invoked for xml records and report generated at project path </h1>";
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			throw new FileHandlerException("XML File Handling Error: ", e);
