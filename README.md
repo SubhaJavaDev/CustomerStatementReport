@@ -5,4 +5,5 @@ The application gets input from src/main/resources as records.csv, records.xml.
 Perform validation for endbalance, find duplicate records and add the comment fields. 
 After validation completion, failed records are written in project location as output.txt for records.csv file and 
 XMLoutput.txt for records.xml file. 
-The application runs in port 8080 and uses http://localhost:8080/customerFailRecordsGeneration to view the batch completion status.
+The application runs in port 8080 and uses http://localhost:8080/csvFileGeneration for CSV Report.
+To view XML Report use http://localhost:8080/xmlFileGeneration

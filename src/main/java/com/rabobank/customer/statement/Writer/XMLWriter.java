@@ -14,6 +14,8 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemStreamWriter;
 
+import com.rabobank.customer.exception.FileHandlerException;
+import com.rabobank.customer.exception.ResourceNotFoundException;
 import com.rabobank.customer.statement.DTO.CustomerStatementDTO;
 
 public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
@@ -34,7 +36,7 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 			fos = new FileOutputStream(file);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new FileHandlerException("Unable to create the file",e);
 		}
 	}
 
@@ -51,15 +53,20 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 				bw.close();
 				fos.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new FileHandlerException("Unable to close the file",e);
 			}
 		}
 
 	}
 
 	@Override
-	public void write(List<? extends CustomerStatementDTO> items) throws Exception {
+	public void write(List<? extends CustomerStatementDTO> items) throws ResourceNotFoundException {
+		
+	if(items.size()<=0)
+	{
+		throw new ResourceNotFoundException("Invalid data in input file");
+	}
+	
 		for (CustomerStatementDTO csr : items) {
 			if (!csr.getComments().isEmpty()) {
 				try {
@@ -69,7 +76,7 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 					bw.newLine();
 
 				} catch (IOException e) {
-					System.err.println("Cannot write message");
+					throw new FileHandlerException("Error while reading items",e);
 				}
 			}
 		}
@@ -98,7 +105,7 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 							bw.newLine();
 
 						} catch (IOException e) {
-							System.err.println("Cannot write message");
+							throw new FileHandlerException("Error while writing the items to the file",e);
 						}
 					}
 
@@ -108,5 +115,8 @@ public class XMLWriter implements ItemStreamWriter<CustomerStatementDTO> {
 		}
 
 	}
+	
+
+	
 
 }

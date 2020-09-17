@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.rabobank.customer.exception.FileHandlerException;
 import com.rabobank.customer.statement.DTO.CustomerStatementDTO;
 
 public class XMLProcessor implements ItemProcessor<CustomerStatementDTO, CustomerStatementDTO> {
@@ -14,20 +15,25 @@ public class XMLProcessor implements ItemProcessor<CustomerStatementDTO, Custome
 
 	@Override
 	public CustomerStatementDTO process(CustomerStatementDTO item) throws Exception {
-		String comments = "";
-		final double startBalance = item.getStartBalance();
-		final double mutation = item.getMutation();
-		final BigDecimal x = new BigDecimal(startBalance);
-		final BigDecimal y = new BigDecimal(mutation);
-		final double actualEndBal = x.add(y).setScale(2, RoundingMode.HALF_UP).doubleValue();
-		if (actualEndBal != item.getEndBalance()) {
-			comments = "End Balance is incorrect";
+		try {
+			log.info("XMLFileHandler Step enters ItemProcessor");
+			String comments = "";
+			final double startBalance = item.getStartBalance();
+			final double mutation = item.getMutation();
+			final BigDecimal x = new BigDecimal(startBalance);
+			final BigDecimal y = new BigDecimal(mutation);
+			final double actualEndBal = x.add(y).setScale(2, RoundingMode.HALF_UP).doubleValue();
+			if (actualEndBal != item.getEndBalance()) {
+				comments = "End Balance is incorrect";
+			}
+			final CustomerStatementDTO itemsWithComments = new CustomerStatementDTO(item.getReference(),
+					item.getAccountNumber(), item.getDescription(), item.getStartBalance(), item.getMutation(),
+					item.getEndBalance(), comments);
+			log.info("Added comments for cutomerRecords");
+			return itemsWithComments;
+		} catch (Exception e) {
+			throw new FileHandlerException("Unable to process xml file ", e);
 		}
-		final CustomerStatementDTO itemsWithComments = new CustomerStatementDTO(item.getReference(),
-				item.getAccountNumber(), item.getDescription(), item.getStartBalance(), item.getMutation(),
-				item.getEndBalance(), comments);
-		log.info("Converting (" + item + ") into (" + itemsWithComments + ")");
-		return itemsWithComments;
 	}
 
 }

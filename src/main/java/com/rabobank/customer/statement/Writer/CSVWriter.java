@@ -14,13 +14,12 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemStreamWriter;
 
+import com.rabobank.customer.exception.FileHandlerException;
 import com.rabobank.customer.statement.DTO.CustomerStatementRecords;
 
 public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 	private FileOutputStream fos;
-
 	private BufferedWriter bw;
-
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException {
 
@@ -32,7 +31,7 @@ public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 			fos = new FileOutputStream(file);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 		} catch (Exception e) {
-			e.printStackTrace();
+//			throw new FileHandlerException("Unable to create the file",e);
 		}
 	}
 
@@ -49,7 +48,7 @@ public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 				bw.close();
 				fos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+//				throw new FileHandlerException("Unable to close the file",e);
 			}
 		}
 
@@ -66,7 +65,7 @@ public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 							+ csr.getDescription() + " Comments: " + csr.getComments());
 					bw.newLine();
 				} catch (IOException e) {
-					System.err.println("Cannot write message");
+					throw new FileHandlerException("Error while reading items",e);
 				}
 			}
 		}
@@ -96,7 +95,7 @@ public class CSVWriter implements ItemStreamWriter<CustomerStatementRecords> {
 							bw.newLine();
 
 						} catch (IOException e) {
-							System.err.println("Cannot write message");
+							throw new FileHandlerException("Error while writing the items to the file",e);
 						}
 					}
 

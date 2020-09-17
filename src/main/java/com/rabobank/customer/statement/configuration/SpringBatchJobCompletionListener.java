@@ -6,7 +6,7 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 
-public class SpringBatchJobCompletionListener extends JobExecutionListenerSupport {
+public class SpringBatchJobCompletionListener extends JobExecutionListenerSupport  {
 	 Logger logger = LoggerFactory.getLogger(SpringBatchJobCompletionListener.class);
 
 	    @Override
@@ -14,7 +14,11 @@ public class SpringBatchJobCompletionListener extends JobExecutionListenerSuppor
 	        if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 	            logger.info("CUSTOMER REPORT GENERATION JOB COMPLETED SUCCESSFULLY");
 	        }
+	        if (jobExecution.getStatus() == BatchStatus.FAILED) {
+	            logger.info("ERROR PROCESSING THE FILE");
+	        }
 	    }
 
 
 }
+
